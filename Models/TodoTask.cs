@@ -10,6 +10,7 @@ public class TodoTaskBaseModel {
     // POST method checks range, 0 -> 5, 5 least priority
     [Range(0, 5)]
     public int priority {get; set;}
+    public bool completed {get; set;} = false;
     public string taskDescription {get; set;} = "";
     public DateTime dueDate {get; set;} = DateTime.Today;
 }

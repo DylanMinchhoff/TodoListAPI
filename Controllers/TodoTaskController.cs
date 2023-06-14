@@ -19,12 +19,14 @@ public class TodoTaskController : Controller {
         return Ok(await _dbContext.TodoTasks.ToListAsync());
     }
 
+    [Route("add-task")]
     [HttpPost]
     public async Task<IActionResult> AddTodoTask([FromBody] AddTodoTask addTodoTask) {
-        Console.WriteLine("name: {0}\npriority: {1}\ntaskDescription: {2}\ndueDate: {3}\n", addTodoTask.taskName, addTodoTask.priority, addTodoTask.taskDescription, addTodoTask.dueDate);
+        // Console.WriteLine("name: {0}\npriority: {1}\ntaskDescription: {2}\ndueDate: {3}\n", addTodoTask.taskName, addTodoTask.priority, addTodoTask.taskDescription, addTodoTask.dueDate);
         TodoTask newTodoTask = new TodoTask(){
             id = Guid.NewGuid(),
             taskName = addTodoTask.taskName,
+            completed = addTodoTask.completed,
             priority = addTodoTask.priority,
             taskDescription = addTodoTask.taskDescription,
             dueDate = addTodoTask.dueDate
@@ -34,6 +36,21 @@ public class TodoTaskController : Controller {
         await _dbContext.SaveChangesAsync();
 
         return Ok(newTodoTask);
+    }
+
+    [Route("edit-task")]
+    [HttpPost]
+    public async Task<IActionResult> EditTodoTask([FromBody] TodoTask todoTask) {
+        if (ModelState.IsValid) {
+            _dbContext.Update(todoTask);
+            await _dbContext.SaveChangesAsync();
+            return Ok(todoTask);
+        }
+        else {
+            return NoContent();
+        }
+
+        
     }
 
     [HttpDelete]
